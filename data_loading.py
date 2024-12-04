@@ -53,23 +53,23 @@ test_labels_filepath = 'dataset/t10k-labels.idx1-ubyte'
 mnist_dataloader = MnistDataloader(training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath)
 (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
-#
-# Save the first 5 images from the training set to a new folder
-#
-# Save the first 5 images from the training set to a new folder
-first_5_images_folder = "first_5_images"
+# ----------------------------------------------------------
+# FOR TESTING PURPOSES:
 
-# Create the folder if it doesn't exist
-if not os.path.exists(first_5_images_folder):
-    os.makedirs(first_5_images_folder)
+# # Save the first 5 images from the training set to a new folder
+# first_5_images_folder = "first_5_images"
 
-# Save the first 5 images and their labels
-for i in range(5):
-    img_array = np.array(x_train[i])  # Convert the list to a NumPy array
-    img = Image.fromarray(img_array)  # Convert the NumPy array to a PIL Image
-    img = img.convert("L")  # Ensure the image is in grayscale
-    img_path = os.path.join(first_5_images_folder, f"image_{i}_label_{y_train[i]}.png")
-    img.save(img_path)
-    print(f"Saved {img_path}")
+# # Create the folder if it doesn't exist
+# if not os.path.exists(first_5_images_folder):
+#     os.makedirs(first_5_images_folder)
 
-print(f"First 5 images saved to {first_5_images_folder}")
+# # Save the first 5 images and their labels
+# for i in range(5):
+#     img_array = np.array(x_train[i])  # Convert the list to a NumPy array
+#     img = Image.fromarray(img_array)  # Convert the NumPy array to a PIL Image
+#     img = img.convert("L")  # Ensure the image is in grayscale
+#     img_path = os.path.join(first_5_images_folder, f"image_{i}_label_{y_train[i]}.png")
+#     img.save(img_path)
+#     print(f"Saved {img_path}")
+
+# print(f"First 5 images saved to {first_5_images_folder}")
