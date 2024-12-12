@@ -1,4 +1,4 @@
-from model_architecture import BetaVAE, VAE, TC_VAE, Sampling, BetaScheduler
+from model_architecture import BetaVAE, VAE, TC_VAE, DistillationVAE, Sampling, BetaScheduler
 from keras import layers
 import keras
 import os
@@ -7,9 +7,16 @@ import tensorflow as tf
 
 np.random.seed(123)
 replace_baseline_model = False
-replace_teacher_model = False
-replace_student_model = False
+
+#Standard big model
+replace_big_model = False
+
+#Enhanced big model with better disentanglement
 replace_tc_model = False
+
+#Two student models
+replace_student_model = False
+replace_student_tc_model = False
 
 #Encoder creation function
 def create_baseline_encoder(model_name, latent_dim = 5, input_shape=(28, 28, 1)):
@@ -54,52 +61,92 @@ def create_decoder(latent_dim = 5, num_filters=64, output_shape=(28, 28, 1)):
 digits = np.concatenate([x_train, x_test], axis=0)
 digits = np.expand_dims(digits, -1).astype("float32") / 255
 
-if replace_baseline_model:
-    if os.path.exists('models/vae_baseline.keras'):
-        os.remove('models/vae_baseline.keras')
-    #Basic baseline VAE: Fewer filters, simpler architecture
-    encoder_baseline = create_baseline_encoder("baseline_vae")
-    decoder_baseline = create_decoder(num_filters=32)
-    vae_baseline = VAE(encoder_baseline, decoder_baseline)
-    vae_baseline.compile(optimizer=keras.optimizers.Adam())
 
-    print("Baseline VAE Encoder Summary:")
-    encoder_baseline.summary()
 
-    #Train and save baseline VAE
-    vae_baseline.fit(digits, epochs=20, batch_size=128)
-    vae_baseline.save('models/vae_baseline.keras')
+import sys
 
-if replace_teacher_model:
-    if os.path.exists('models/bvae_teacher.keras'):
-        os.remove('models/bvae_teacher.keras')
-    #Teacher VAE: More filters, more complex architecture
-    encoder_teacher = create_teacher_encoder()
-    decoder_teacher = create_decoder(num_filters=32)
-    beta_var = tf.Variable(0.0, trainable=False, dtype=tf.float32)
-    vae_teacher = BetaVAE(encoder_teacher, decoder_teacher, beta=beta_var)
-    vae_teacher.compile(optimizer=keras.optimizers.Adam())
+#Output Logging
+output_file = "output_logs/creation.txt"
 
-    #Gradually increase beta from 0 to 4 over 10 epochs
-    callbacks = [BetaScheduler(beta_var, max_beta=4.0, schedule_epochs=10)]
-    vae_teacher.fit(digits, epochs=20, batch_size=128, callbacks=callbacks)
+with open(output_file, "w") as f:
+    sys.stdout = f
+    try:
+        if replace_baseline_model:
+            if os.path.exists('models/vae_baseline.keras'):
+                os.remove('models/vae_baseline.keras')
+            #Basic baseline VAE: Fewer filters, simpler architecture
+            encoder_baseline = create_baseline_encoder("baseline_vae")
+            decoder_baseline = create_decoder(num_filters=32)
+            vae_baseline = VAE(encoder_baseline, decoder_baseline)
+            vae_baseline.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
 
-    vae_teacher.save('models/bvae_teacher.keras')
+            #Train and save baseline VAE
+            print("Training Baseline VAE")
+            vae_baseline.fit(digits, epochs=10, batch_size=128, verbose=2)
+            vae_baseline.save('models/vae_baseline.keras')
 
-if replace_tc_model:
-    if os.path.exists('models/tcvae_teacher.keras'):
-        os.remove('models/tcvae_teacher.keras')
-    #Teacher VAE: More filters, more complex architecture
-    encoder_teacher = create_teacher_encoder()
-    decoder_teacher = create_decoder(num_filters=32)
-    vae_teacher = TC_VAE(encoder_teacher, decoder_teacher, beta=1.0, beta_tc=0.0)
-    vae_teacher.compile(optimizer=keras.optimizers.Adam())
+        if replace_big_model:
+            if os.path.exists('models/vae_big.keras'):
+                os.remove('models/vae_big.keras')
+            #Teacher VAE: More filters, more complex architecture
+            encoder_big = create_teacher_encoder()
+            decoder_big = create_decoder(num_filters=32)
+            vae_big =VAE(encoder_big, decoder_big)
+            vae_big.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
 
-    #Add BetaScheduler
-    beta_tc_var = tf.Variable(0.0, trainable=False, dtype=tf.float32)
-    callbacks = [BetaScheduler(beta_tc_var, max_beta=10.0, schedule_epochs=10)]
+            print("Training Big VAE")
+            vae_big.fit(digits, epochs=20, batch_size=128, verbose=2)
 
-    #Train
-    vae_teacher.fit(digits, epochs=20, batch_size=128, callbacks=callbacks)
-    vae_teacher.save('models/tcvae_teacher.keras')
+            vae_big.save('models/vae_big.keras')
 
+        if replace_tc_model:
+            if os.path.exists('models/tcvae_teacher.keras'):
+                os.remove('models/tcvae_teacher.keras')
+            #Teacher VAE: More filters, more complex architecture
+            encoder_big = create_teacher_encoder()
+            decoder_big = create_decoder(num_filters=32)
+            vae_big = TC_VAE(encoder_big, decoder_big, beta=1.0, beta_tc=0.0)
+            vae_big.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
+
+            #Add BetaScheduler
+            beta_tc_var = tf.Variable(0.0, trainable=False, dtype=tf.float32)
+            callbacks = [BetaScheduler(beta_tc_var, max_beta=10.0, schedule_epochs=10)]
+
+            #Train
+            print("Training Teacher VAE")
+            vae_big.fit(digits, epochs=20, batch_size=128, callbacks=callbacks, verbose=2)
+            vae_big.save('models/tcvae_teacher.keras')
+
+
+        if replace_student_model:
+            if os.path.exists('models/vae_student.keras'):
+                os.remove('models/vae_student.keras')
+            #Student VAE: Same size as baseline VAE, but trained using distillation
+            teacher_vae = keras.models.load_model('models/vae_big.keras', custom_objects={'VAE': VAE})
+            
+            encoder_student = create_baseline_encoder("student_vae")
+            decoder_student = create_decoder(num_filters=32)
+            vae_student = DistillationVAE(encoder=encoder_student, decoder=decoder_student, teacher_model=teacher_vae, alpha=0.5)
+            vae_student.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
+            print("Training Student VAE")
+            vae_student.fit(digits, epochs=10, batch_size=128, verbose=2)
+
+            vae_student.save('models/vae_student.keras')
+
+        if replace_student_tc_model:
+            if os.path.exists('models/vae_student_tc.keras'):
+                os.remove('models/vae_student_tc.keras')
+            #Student VAE: Same size as baseline VAE, but trained using distillation
+            teacher_vae = keras.models.load_model('models/tcvae_teacher.keras', custom_objects={'TC_VAE': TC_VAE})
+            
+            encoder_student_tc = create_baseline_encoder("student_tc_vae")
+            decoder_student_tc = create_decoder(num_filters=32)
+            vae_student_tc = DistillationVAE(encoder=encoder_student, decoder=decoder_student, teacher_model=teacher_vae, alpha=0.5)
+            vae_student_tc.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
+            print("Training Student TC VAE")
+            vae_student_tc.fit(digits, epochs=10, batch_size=128, verbose=2)
+
+            vae_student_tc.save('models/vae_student_tc.keras')
+    finally:
+        # Restore original stdout
+        sys.stdout = sys.__stdout__

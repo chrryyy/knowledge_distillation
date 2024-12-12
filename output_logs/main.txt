@@ -1,0 +1,31 @@
+baseline VAE MIG Calculation:
+313/313 - 0s - 1ms/step
+MIG Score: 0.06009017615719277
+Individual MIG Scores: [np.float64(0.08924198546950324), np.float64(0.005431758109235126), np.float64(0.043197204177748305), np.float64(0.15667901986362842), np.float64(0.005900913165848728)]
+Student VAE MIG Calculation:
+313/313 - 0s - 1ms/step
+MIG Score: 0.11404698470977018
+Individual MIG Scores: [np.float64(0.15060179006270366), np.float64(0.015686329277123025), np.float64(0.10351539924981627), np.float64(0.2817976275163019), np.float64(0.018633777442906004)]
+Student TC VAE MIG Calculation:
+313/313 - 0s - 1ms/step
+MIG Score: 0.11688186899290087
+Individual MIG Scores: [np.float64(0.1599429961537194), np.float64(0.019689977323639356), np.float64(0.1103695612246585), np.float64(0.2751080694332827), np.float64(0.019298740829204384)]
+Big VAE MIG Calculation:
+313/313 - 1s - 3ms/step
+MIG Score: 0.09318043966696676
+Individual MIG Scores: [np.float64(0.14049530842131794), np.float64(0.007326857335789958), np.float64(0.05677282573993591), np.float64(0.2299789461010651), np.float64(0.0313282607367249)]
+TC VAE MIG Calculation:
+313/313 - 1s - 3ms/step
+MIG Score: 0.062081392237049934
+Individual MIG Scores: [np.float64(0.03160852067361353), np.float64(0.010534349764887119), np.float64(0.21892639523922627), np.float64(0.007180257502755044), np.float64(0.042157438004767706)]
+Reconstruction Accuracy:
+313/313 - 1s - 5ms/step
+Baseline VAE Reconstruction Accuracy: 0.9653950929641724
+313/313 - 2s - 5ms/step
+Student VAE Reconstruction Accuracy: 0.9677711129188538
+313/313 - 1s - 5ms/step
+Student TC VAE Reconstruction Accuracy: 0.970232367515564
+313/313 - 2s - 6ms/step
+Big VAE Reconstruction Accuracy: 0.9727838039398193
+313/313 - 2s - 6ms/step
+TC VAE Reconstruction Accuracy: 0.9727545380592346

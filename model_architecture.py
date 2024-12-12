@@ -251,3 +251,41 @@ class TC_VAE(keras.Model):
             "tc_loss": self.tc_loss_tracker.result(),
         }
 
+#Builds off of the basic VAE and adds a distillation loss term instead
+class DistillationVAE(VAE):
+    def __init__(self, encoder, decoder, teacher_model=None, alpha=1.0, **kwargs):
+        super().__init__(encoder, decoder, **kwargs)
+        self.teacher_model = teacher_model
+        self.alpha = alpha
+        self.distillation_loss_tracker = keras.metrics.Mean(name="distillation_loss")
+
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "encoder_config": self.encoder.get_config(),
+            "decoder_config": self.decoder.get_config(),
+            "alpha": self.alpha,
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        """
+        Recreates the DistillationVAE from its configuration.
+        """
+        # Extract encoder and decoder configs
+        encoder_config = config.pop("encoder_config")
+        decoder_config = config.pop("decoder_config")
+        alpha = config.pop("alpha", 1.0)
+
+        # Rebuild encoder and decoder
+        encoder = Model.from_config(encoder_config)
+        decoder = Model.from_config(decoder_config)
+
+        # Pass only remaining configs to the constructor
+        return cls(encoder=encoder, decoder=decoder, alpha=alpha)
+
+
+    @property
+    def metrics(self):
+        return super().metrics + [self.distillation_loss_tracker]

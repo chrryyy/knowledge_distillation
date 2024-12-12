@@ -1,0 +1,145 @@
+Training Baseline VAE
+Epoch 1/10
+547/547 - 17s - 30ms/step - kl_loss: 6.8234 - loss: 313.7347 - reconstruction_loss: 306.9115
+Epoch 2/10
+547/547 - 15s - 27ms/step - kl_loss: 4.6843 - loss: 210.8894 - reconstruction_loss: 206.2053
+Epoch 3/10
+547/547 - 15s - 28ms/step - kl_loss: 4.5525 - loss: 200.7603 - reconstruction_loss: 196.2077
+Epoch 4/10
+547/547 - 15s - 28ms/step - kl_loss: 6.1369 - loss: 185.3306 - reconstruction_loss: 179.1937
+Epoch 5/10
+547/547 - 15s - 27ms/step - kl_loss: 7.8650 - loss: 165.8326 - reconstruction_loss: 157.9676
+Epoch 6/10
+547/547 - 15s - 27ms/step - kl_loss: 8.7226 - loss: 155.1123 - reconstruction_loss: 146.3896
+Epoch 7/10
+547/547 - 15s - 27ms/step - kl_loss: 9.1583 - loss: 149.8836 - reconstruction_loss: 140.7253
+Epoch 8/10
+547/547 - 15s - 28ms/step - kl_loss: 9.3984 - loss: 146.7885 - reconstruction_loss: 137.3900
+Epoch 9/10
+547/547 - 15s - 28ms/step - kl_loss: 9.6180 - loss: 144.5615 - reconstruction_loss: 134.9435
+Epoch 10/10
+547/547 - 15s - 28ms/step - kl_loss: 10.1773 - loss: 141.8723 - reconstruction_loss: 131.6949
+Training Big VAE
+Epoch 1/20
+547/547 - 25s - 45ms/step - kl_loss: 10.9164 - loss: 286.9872 - reconstruction_loss: 276.0708
+Epoch 2/20
+547/547 - 23s - 42ms/step - kl_loss: 7.8018 - loss: 187.5484 - reconstruction_loss: 179.7468
+Epoch 3/20
+547/547 - 23s - 41ms/step - kl_loss: 9.4036 - loss: 161.2072 - reconstruction_loss: 151.8035
+Epoch 4/20
+547/547 - 23s - 42ms/step - kl_loss: 10.4171 - loss: 146.7107 - reconstruction_loss: 136.2937
+Epoch 5/20
+547/547 - 24s - 43ms/step - kl_loss: 10.7756 - loss: 140.6381 - reconstruction_loss: 129.8625
+Epoch 6/20
+547/547 - 24s - 43ms/step - kl_loss: 10.9163 - loss: 137.5102 - reconstruction_loss: 126.5940
+Epoch 7/20
+547/547 - 25s - 45ms/step - kl_loss: 11.0145 - loss: 135.1410 - reconstruction_loss: 124.1264
+Epoch 8/20
+547/547 - 24s - 43ms/step - kl_loss: 11.1148 - loss: 133.2484 - reconstruction_loss: 122.1337
+Epoch 9/20
+547/547 - 25s - 46ms/step - kl_loss: 11.1812 - loss: 131.7295 - reconstruction_loss: 120.5482
+Epoch 10/20
+547/547 - 25s - 47ms/step - kl_loss: 11.2416 - loss: 130.5357 - reconstruction_loss: 119.2942
+Epoch 11/20
+547/547 - 25s - 45ms/step - kl_loss: 11.2988 - loss: 129.5554 - reconstruction_loss: 118.2565
+Epoch 12/20
+547/547 - 25s - 45ms/step - kl_loss: 11.3206 - loss: 128.6696 - reconstruction_loss: 117.3489
+Epoch 13/20
+547/547 - 24s - 45ms/step - kl_loss: 11.3817 - loss: 127.9609 - reconstruction_loss: 116.5791
+Epoch 14/20
+547/547 - 24s - 44ms/step - kl_loss: 11.4239 - loss: 127.2998 - reconstruction_loss: 115.8759
+Epoch 15/20
+547/547 - 24s - 45ms/step - kl_loss: 11.4409 - loss: 126.7343 - reconstruction_loss: 115.2934
+Epoch 16/20
+547/547 - 26s - 48ms/step - kl_loss: 11.4872 - loss: 126.1925 - reconstruction_loss: 114.7053
+Epoch 17/20
+547/547 - 24s - 44ms/step - kl_loss: 11.5145 - loss: 125.7548 - reconstruction_loss: 114.2404
+Epoch 18/20
+547/547 - 24s - 44ms/step - kl_loss: 11.5415 - loss: 125.2819 - reconstruction_loss: 113.7404
+Epoch 19/20
+547/547 - 24s - 44ms/step - kl_loss: 11.5654 - loss: 124.8777 - reconstruction_loss: 113.3123
+Epoch 20/20
+547/547 - 24s - 44ms/step - kl_loss: 11.6053 - loss: 124.5252 - reconstruction_loss: 112.9199
+Training Teacher VAE
+Epoch 1/20
+547/547 - 27s - 49ms/step - kl_loss: 11.1355 - loss: 281.4276 - reconstruction_loss: 270.2921 - tc_loss: 0.5678
+Epoch 2/20
+547/547 - 24s - 44ms/step - kl_loss: 8.2466 - loss: 183.1373 - reconstruction_loss: 174.8905 - tc_loss: -3.4177e-01
+Epoch 3/20
+547/547 - 24s - 44ms/step - kl_loss: 9.8345 - loss: 156.2484 - reconstruction_loss: 146.4138 - tc_loss: -2.9174e-01
+Epoch 4/20
+547/547 - 24s - 43ms/step - kl_loss: 10.5450 - loss: 143.8255 - reconstruction_loss: 133.2807 - tc_loss: -2.0266e-01
+Epoch 5/20
+547/547 - 24s - 44ms/step - kl_loss: 10.8708 - loss: 138.6039 - reconstruction_loss: 127.7330 - tc_loss: -1.5953e-01
+Epoch 6/20
+547/547 - 24s - 44ms/step - kl_loss: 11.0396 - loss: 135.7753 - reconstruction_loss: 124.7356 - tc_loss: -1.3776e-01
+Epoch 7/20
+547/547 - 24s - 43ms/step - kl_loss: 11.1348 - loss: 133.7357 - reconstruction_loss: 122.6008 - tc_loss: -1.2355e-01
+Epoch 8/20
+547/547 - 24s - 43ms/step - kl_loss: 11.2101 - loss: 132.2025 - reconstruction_loss: 120.9925 - tc_loss: -1.0993e-01
+Epoch 9/20
+547/547 - 24s - 44ms/step - kl_loss: 11.2576 - loss: 130.9571 - reconstruction_loss: 119.6995 - tc_loss: -1.0113e-01
+Epoch 10/20
+547/547 - 24s - 44ms/step - kl_loss: 11.2977 - loss: 129.9266 - reconstruction_loss: 118.6290 - tc_loss: -9.6117e-02
+Epoch 11/20
+547/547 - 24s - 44ms/step - kl_loss: 11.3439 - loss: 129.0417 - reconstruction_loss: 117.6978 - tc_loss: -9.3449e-02
+Epoch 12/20
+547/547 - 24s - 44ms/step - kl_loss: 11.3886 - loss: 128.2881 - reconstruction_loss: 116.8996 - tc_loss: -9.0083e-02
+Epoch 13/20
+547/547 - 24s - 43ms/step - kl_loss: 11.4327 - loss: 127.6246 - reconstruction_loss: 116.1918 - tc_loss: -8.9139e-02
+Epoch 14/20
+547/547 - 24s - 43ms/step - kl_loss: 11.4709 - loss: 127.0280 - reconstruction_loss: 115.5571 - tc_loss: -8.7104e-02
+Epoch 15/20
+547/547 - 24s - 44ms/step - kl_loss: 11.4980 - loss: 126.4924 - reconstruction_loss: 114.9943 - tc_loss: -8.6623e-02
+Epoch 16/20
+547/547 - 24s - 44ms/step - kl_loss: 11.5438 - loss: 126.0323 - reconstruction_loss: 114.4883 - tc_loss: -8.7509e-02
+Epoch 17/20
+547/547 - 24s - 43ms/step - kl_loss: 11.5710 - loss: 125.5769 - reconstruction_loss: 114.0058 - tc_loss: -8.3975e-02
+Epoch 18/20
+547/547 - 24s - 43ms/step - kl_loss: 11.6025 - loss: 125.1570 - reconstruction_loss: 113.5546 - tc_loss: -8.3365e-02
+Epoch 19/20
+547/547 - 24s - 43ms/step - kl_loss: 11.6231 - loss: 124.8074 - reconstruction_loss: 113.1844 - tc_loss: -8.2731e-02
+Epoch 20/20
+547/547 - 24s - 44ms/step - kl_loss: 11.6572 - loss: 124.5190 - reconstruction_loss: 112.8618 - tc_loss: -8.2795e-02
+Training Student VAE
+Epoch 1/10
+547/547 - 20s - 36ms/step - kl_loss: 8.8199 - loss: 290.7112 - reconstruction_loss: 281.8913
+Epoch 2/10
+547/547 - 17s - 32ms/step - kl_loss: 5.8488 - loss: 198.8335 - reconstruction_loss: 192.9845
+Epoch 3/10
+547/547 - 17s - 32ms/step - kl_loss: 7.3586 - loss: 179.6386 - reconstruction_loss: 172.2801
+Epoch 4/10
+547/547 - 18s - 33ms/step - kl_loss: 8.9920 - loss: 163.1375 - reconstruction_loss: 154.1455
+Epoch 5/10
+547/547 - 17s - 32ms/step - kl_loss: 9.9249 - loss: 151.5192 - reconstruction_loss: 141.5944
+Epoch 6/10
+547/547 - 18s - 32ms/step - kl_loss: 10.4257 - loss: 145.4162 - reconstruction_loss: 134.9906
+Epoch 7/10
+547/547 - 17s - 32ms/step - kl_loss: 10.6444 - loss: 141.6058 - reconstruction_loss: 130.9615
+Epoch 8/10
+547/547 - 17s - 32ms/step - kl_loss: 10.7874 - loss: 139.1179 - reconstruction_loss: 128.3304
+Epoch 9/10
+547/547 - 18s - 32ms/step - kl_loss: 10.8416 - loss: 137.2551 - reconstruction_loss: 126.4135
+Epoch 10/10
+547/547 - 17s - 32ms/step - kl_loss: 10.8846 - loss: 135.8669 - reconstruction_loss: 124.9822
+Training Student TC VAE
+Epoch 1/10
+547/547 - 20s - 37ms/step - kl_loss: 10.9366 - loss: 134.8399 - reconstruction_loss: 123.9033
+Epoch 2/10
+547/547 - 17s - 32ms/step - kl_loss: 10.9436 - loss: 133.9330 - reconstruction_loss: 122.9893
+Epoch 3/10
+547/547 - 17s - 32ms/step - kl_loss: 10.9673 - loss: 133.2278 - reconstruction_loss: 122.2606
+Epoch 4/10
+547/547 - 18s - 32ms/step - kl_loss: 11.0168 - loss: 132.6326 - reconstruction_loss: 121.6156
+Epoch 5/10
+547/547 - 18s - 32ms/step - kl_loss: 11.0099 - loss: 132.0255 - reconstruction_loss: 121.0156
+Epoch 6/10
+547/547 - 17s - 32ms/step - kl_loss: 11.0419 - loss: 131.5591 - reconstruction_loss: 120.5174
+Epoch 7/10
+547/547 - 17s - 32ms/step - kl_loss: 11.0708 - loss: 131.1286 - reconstruction_loss: 120.0578
+Epoch 8/10
+547/547 - 17s - 32ms/step - kl_loss: 11.0833 - loss: 130.7383 - reconstruction_loss: 119.6551
+Epoch 9/10
+547/547 - 18s - 32ms/step - kl_loss: 11.0992 - loss: 130.3780 - reconstruction_loss: 119.2788
+Epoch 10/10
+547/547 - 17s - 32ms/step - kl_loss: 11.1160 - loss: 130.0417 - reconstruction_loss: 118.9258

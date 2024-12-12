@@ -1,5 +1,5 @@
 from keras.models import load_model
-from model_architecture import Sampling, BetaVAE
+from model_architecture import Sampling, BetaVAE, DistillationVAE
 from sklearn.decomposition import PCA
 from sklearn.metrics import mutual_info_score
 from sklearn.preprocessing import KBinsDiscretizer
@@ -10,13 +10,19 @@ import keras
 import seaborn as sns
 
 
-def load_models(small_model_path, big_model_path, teacher_model_path, tc_model_path):
+def load_models(small_model_path, student_model_path, student_tc_model_path, big_model_path, tc_model_path):
     #Load pre-trained VAE models.
     vae_small = load_model(small_model_path, custom_objects={"Sampling": Sampling})
     vae_big = load_model(big_model_path, custom_objects={"Sampling": Sampling})
-    vae_teacher = load_model(teacher_model_path, custom_objects={"Sampling": Sampling})
     vae_tc = load_model(tc_model_path, custom_objects={"Sampling": Sampling})
-    return vae_small, vae_big, vae_teacher, vae_tc
+    vae_student = keras.models.load_model(student_model_path, custom_objects={"DistillationVAE": DistillationVAE,"teacher_model": vae_big, "Sampling": Sampling})
+    vae_student.teacher_model = vae_big
+
+    vae_student_tc = keras.models.load_model(student_tc_model_path, custom_objects={"DistillationVAE": DistillationVAE,"teacher_model": vae_tc, "Sampling": Sampling})
+    vae_student_tc.teacher_model = vae_tc
+
+    
+    return vae_small, vae_student, vae_student_tc, vae_big, vae_tc
 
 
 def load_data():
@@ -77,14 +83,14 @@ def compute_mig(mi_matrix, factors):
     return np.mean(mig_scores), mig_scores
 
 
-def calculate_and_plot_mig(vae, metrics_path, digits, factors_cols):
+def calculate_and_plot_mig(vae, model_name, metrics_path, digits, factors_cols):
     #Load metrics, calculate latent codes, and compute MIG
 
     #Load ground truth factors and latent codes
     metrics = pd.read_csv(metrics_path)
     factors = metrics[factors_cols].to_numpy()
     digits_subset = digits[-len(factors):]
-    z_mean, _, _ = vae.encoder.predict(digits_subset)
+    z_mean, _, _ = vae.encoder.predict(digits_subset, verbose=2)
 
     #Discretize latent codes and factors
     discretized_latent_codes = discretize_data(z_mean, n_bins=10)
@@ -105,6 +111,12 @@ def calculate_and_plot_mig(vae, metrics_path, digits, factors_cols):
     plt.xlabel("Factors")
     plt.ylabel("Latent Variables")
     #Save to figures folder
-    plt.savefig("figures/mutual_information_heatmap.png")
+    plt.savefig(f"figures/MI_heatmap_{model_name}.png")
 
     return mig_score, mi_matrix
+
+#Reconstruction accuracy (General performance)
+def reconstruction_accuracy(model, data):
+    reconstructed = model.predict(data, verbose=2)
+    mse = np.mean(np.square(data - reconstructed))
+    return 1 - mse
