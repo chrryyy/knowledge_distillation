@@ -32,28 +32,6 @@ def load_data():
     return digits
 
 
-def extract_latent_vectors(vae_small, vae_big, data):
-    #Extract latent vectors from the small and big VAEs.
-    z_mean_small, _, _ = vae_small.encoder.predict(data)
-    z_mean_big, _, _ = vae_big.encoder.predict(data)
-    return z_mean_small, z_mean_big
-
-
-def visualize_latent_space(z_mean_small, z_mean_big):
-    #Apply PCA and visualize latent spaces.
-    pca_small = PCA(n_components=2).fit_transform(z_mean_small)
-    pca_big = PCA(n_components=2).fit_transform(z_mean_big)
-
-    plt.figure(figsize=(12, 6))
-    plt.subplot(1, 2, 1)
-    plt.scatter(pca_small[:, 0], pca_small[:, 1], alpha=0.5)
-    plt.title("Small VAE Latent Space")
-    plt.subplot(1, 2, 2)
-    plt.scatter(pca_big[:, 0], pca_big[:, 1], alpha=0.5)
-    plt.title("Big VAE Latent Space")
-    plt.show()
-
-
 def discretize_data(data, n_bins=10):
     #Discretize continuous data into bins for MI calculation.
     discretizer = KBinsDiscretizer(n_bins=n_bins, encode='ordinal', strategy='uniform')
@@ -150,3 +128,117 @@ def visualize_reconstruction(models, model_names, test_sample, save_path="figure
     plt.tight_layout()
     plt.savefig(save_path)
     plt.show()
+
+def interpolate_and_plot_latent_space(models, model_names, img1, img2, num_steps=10, save_path="figures/interpolations.png"):
+    #Linear interpolation between two images in latent space
+    plt.figure(figsize=(15, len(models) * 2))
+
+    for row_idx, (model, model_name) in enumerate(zip(models, model_names)):
+        #Encode images into latent space
+        z_mean1, _, _ = model.encoder.predict(img1)
+        z_mean2, _, _ = model.encoder.predict(img2)
+
+        #Linearly interpolate
+        interpolated_images = []
+        for alpha in np.linspace(0, 1, num_steps):
+            z_interp = (1 - alpha) * z_mean1 + alpha * z_mean2
+            reconstructed = model.decoder.predict(z_interp)
+            interpolated_images.append(reconstructed[0, :, :, 0])
+
+        #Add original images to the first and last step
+        interpolated_images.insert(0, img1[0, :, :, 0])
+        interpolated_images.append(img2[0, :, :, 0])
+
+        #Plot all images
+        for col_idx, img in enumerate(interpolated_images):
+            plt.subplot(len(models), num_steps + 2, row_idx * (num_steps + 2) + col_idx + 1)
+            plt.imshow(img, cmap="gray")
+            plt.axis("off")
+            if row_idx == 0:
+                if col_idx == 0:
+                    plt.title("Original 1")
+                elif col_idx == len(interpolated_images) - 1:
+                    plt.title("Original 2")
+                else:
+                    plt.title(f"Step {col_idx}")
+        plt.suptitle(f"Latent Space Interpolation ({model_name})", y=1.02, fontsize=16)
+
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.show()
+
+
+def plot_tangent_vectors_latent_axes(jacobian, image_shape, model_name, title_suffix=""):
+    #Helper function for visualizing latent space tangent vectors
+    num_inputs = jacobian.shape[1]
+    ncols = 16
+    nrows = int(np.ceil(num_inputs / ncols))
+
+    fig, axes = plt.subplots(nrows, ncols, figsize=(ncols * 2, nrows * 2))
+    axes = axes.flatten()
+
+    for i in range(num_inputs):
+        tangent_vector = jacobian[:, i]
+        image = tangent_vector.reshape(image_shape)
+        #Normalize
+        image = (image - image.min()) / (image.max() - image.min() + 1e-8)
+        axes[i].imshow(image, cmap="gray")
+        axes[i].axis("off")
+        axes[i].set_title(f"Axis {i+1}", fontsize=6)
+
+    #Hide unused subplots
+    for i in range(num_inputs, len(axes)):
+        axes[i].axis("off")
+
+    plt.suptitle(f"{model_name} Latent Axes Tangent Vectors {title_suffix}", fontsize=12)
+    plt.tight_layout()
+    plt.savefig(f"figures/latent_tangent_vectors_{model_name}.png")
+
+def plot_tangent_vectors_principal_components(jacobian, image_shape, model_name, num_components=128, title_suffix=""):
+    #Helper function for visualizing principal component tangent vectors
+    U, S, V = np.linalg.svd(jacobian, full_matrices=False)
+
+    components_to_plot = min(num_components, V.shape[1])
+    ncols = 16
+    nrows = int(np.ceil(components_to_plot / ncols))
+
+    fig, axes = plt.subplots(nrows, ncols, figsize=(ncols * 2, nrows * 2))
+    axes = axes.flatten()
+
+    for i in range(components_to_plot):
+        principal_tangent = jacobian @ V[i]
+        image = principal_tangent.reshape(image_shape)
+        #Normalize
+        image = (image - image.min()) / (image.max() - image.min() + 1e-8)
+        axes[i].imshow(image, cmap="gray")
+        axes[i].axis("off")
+        axes[i].set_title(f"PC {i+1}", fontsize=6)
+
+    #Hide unused subplots
+    for i in range(components_to_plot, len(axes)):
+        axes[i].axis("off")
+
+    plt.suptitle(f"{model_name} Principal Components Tangent Vectors {title_suffix}", fontsize=12)
+    plt.tight_layout()
+    plt.savefig(f"figures/latent_tangent_vectors_{model_name}.png")
+
+
+def compute_and_plot_tangent_vectors(models, model_names, test_sample):
+    #Compute and visualize tangent vectors in latent space
+    image_shape = test_sample.shape[1:]
+    for model, model_name in zip(models, model_names):
+        #Latent vector
+        z_mean, _, _ = model.encoder.predict(test_sample)
+
+         #Compute Jacobian
+        jacobian = np.zeros((np.prod(image_shape), z_mean.shape[1]))
+
+        for i in range(z_mean.shape[1]):
+            z_input = np.zeros_like(z_mean)
+            z_input[0, i] = 1.0
+            decoded_output = model.decoder.predict(z_input)
+            jacobian[:, i] = decoded_output.flatten()
+
+        #Plot tangent vectors
+        plot_tangent_vectors_latent_axes(jacobian, image_shape, model_name)
+        plot_tangent_vectors_principal_components(jacobian, image_shape, model_name)

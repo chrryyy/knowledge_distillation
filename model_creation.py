@@ -16,7 +16,7 @@ replace_tc_model = False
 
 #Two student models
 replace_student_model = False
-replace_student_tc_model = True
+replace_student_tc_model = False
 
 #Encoder creation function
 def create_baseline_encoder(model_name, latent_dim = 5, input_shape=(28, 28, 1)):
@@ -105,12 +105,12 @@ with open(output_file, "w") as f:
             #Teacher VAE: More filters, more complex architecture
             encoder_tc = create_teacher_encoder()
             decoder_tc = create_decoder(num_filters=32)
-            vae_tc = TC_VAE(encoder_tc, decoder_tc, beta=2.0, beta_tc=0.0)
+            vae_tc = TC_VAE(encoder_tc, decoder_tc, beta=1.0, beta_tc=0.0)
             vae_tc.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
 
             #Add BetaScheduler
             beta_tc_var = tf.Variable(0.0, trainable=False, dtype=tf.float32)
-            callbacks = [BetaScheduler(beta_tc_var, max_beta=0.5, schedule_epochs=10)]
+            callbacks = [BetaScheduler(beta_tc_var, max_beta=1.0, schedule_epochs=10)]
 
             #Train
             print("Training Teacher VAE")
@@ -150,3 +150,33 @@ with open(output_file, "w") as f:
     finally:
         # Restore original stdout
         sys.stdout = sys.__stdout__
+
+import struct
+import numpy as np
+import pandas as pd
+
+def load_labels(file_path):
+    with open(file_path, 'rb') as f:
+        # Read magic number and number of labels
+        magic, num_items = struct.unpack(">II", f.read(8))  # Big-endian, two unsigned integers
+        assert magic == 2049, f"Invalid magic number: {magic}"  # Ensure it's a label file
+        # Read the labels
+        labels = np.frombuffer(f.read(), dtype=np.uint8)
+    return labels
+
+# File paths
+labels_file_path = "dataset/t10k-labels.idx1-ubyte"
+morpho_csv_path = "dataset/t10k-morpho.csv"
+
+# Load labels and morphometric data
+labels = load_labels(labels_file_path)
+morpho_df = pd.read_csv(morpho_csv_path)
+
+# Combine into a single DataFrame
+morpho_df["label"] = labels
+
+# Save to Excel
+output_path = "combined_morphometrics.csv"
+morpho_df.to_csv(output_path, index=False)
+
+print(f"Combined data saved to {output_path}")
