@@ -1,0 +1,41 @@
+Training Teacher VAE
+Epoch 1/20
+547/547 - 23s - 43ms/step - kl_loss: 11.4719 - loss: 283.6766 - reconstruction_loss: 272.2046 - tc_loss: 0.2904
+Epoch 2/20
+547/547 - 20s - 37ms/step - kl_loss: 8.6765 - loss: 178.6800 - reconstruction_loss: 170.0034 - tc_loss: -4.0408e-01
+Epoch 3/20
+547/547 - 21s - 38ms/step - kl_loss: 9.6840 - loss: 157.2979 - reconstruction_loss: 147.6139 - tc_loss: -3.0511e-01
+Epoch 4/20
+547/547 - 22s - 41ms/step - kl_loss: 10.3968 - loss: 144.8844 - reconstruction_loss: 134.4877 - tc_loss: -2.4409e-01
+Epoch 5/20
+547/547 - 22s - 40ms/step - kl_loss: 10.7984 - loss: 139.3242 - reconstruction_loss: 128.5256 - tc_loss: -2.0967e-01
+Epoch 6/20
+547/547 - 23s - 43ms/step - kl_loss: 10.9796 - loss: 136.3977 - reconstruction_loss: 125.4181 - tc_loss: -1.9383e-01
+Epoch 7/20
+547/547 - 23s - 43ms/step - kl_loss: 11.1153 - loss: 134.3994 - reconstruction_loss: 123.2841 - tc_loss: -1.8549e-01
+Epoch 8/20
+547/547 - 24s - 44ms/step - kl_loss: 11.2049 - loss: 132.8805 - reconstruction_loss: 121.6756 - tc_loss: -1.7894e-01
+Epoch 9/20
+547/547 - 24s - 44ms/step - kl_loss: 11.2824 - loss: 131.6123 - reconstruction_loss: 120.3299 - tc_loss: -1.7303e-01
+Epoch 10/20
+547/547 - 25s - 45ms/step - kl_loss: 11.3281 - loss: 130.5205 - reconstruction_loss: 119.1924 - tc_loss: -1.6968e-01
+Epoch 11/20
+547/547 - 29s - 53ms/step - kl_loss: 11.3719 - loss: 129.5873 - reconstruction_loss: 118.2154 - tc_loss: -1.6751e-01
+Epoch 12/20
+547/547 - 25s - 46ms/step - kl_loss: 11.4150 - loss: 128.7909 - reconstruction_loss: 117.3759 - tc_loss: -1.6249e-01
+Epoch 13/20
+547/547 - 27s - 49ms/step - kl_loss: 11.4692 - loss: 128.0951 - reconstruction_loss: 116.6258 - tc_loss: -1.6084e-01
+Epoch 14/20
+547/547 - 35s - 63ms/step - kl_loss: 11.4972 - loss: 127.3884 - reconstruction_loss: 115.8913 - tc_loss: -1.5620e-01
+Epoch 15/20
+547/547 - 27s - 49ms/step - kl_loss: 11.5099 - loss: 126.8112 - reconstruction_loss: 115.3012 - tc_loss: -1.5418e-01
+Epoch 16/20
+547/547 - 23s - 43ms/step - kl_loss: 11.5687 - loss: 126.3045 - reconstruction_loss: 114.7359 - tc_loss: -1.5131e-01
+Epoch 17/20
+547/547 - 24s - 43ms/step - kl_loss: 11.5849 - loss: 125.8345 - reconstruction_loss: 114.2496 - tc_loss: -1.5021e-01
+Epoch 18/20
+547/547 - 23s - 43ms/step - kl_loss: 11.6053 - loss: 125.4264 - reconstruction_loss: 113.8211 - tc_loss: -1.4940e-01
+Epoch 19/20
+547/547 - 25s - 45ms/step - kl_loss: 11.6424 - loss: 125.0436 - reconstruction_loss: 113.4013 - tc_loss: -1.4817e-01
+Epoch 20/20
+547/547 - 25s - 46ms/step - kl_loss: 11.6576 - loss: 124.6640 - reconstruction_loss: 113.0064 - tc_loss: -1.4677e-01

@@ -83,40 +83,70 @@ def compute_mig(mi_matrix, factors):
     return np.mean(mig_scores), mig_scores
 
 
-def calculate_and_plot_mig(vae, model_name, metrics_path, digits, factors_cols):
+def calculate_and_plot_mig(models, model_names, metrics_path, digits, factors_cols):
     #Load metrics, calculate latent codes, and compute MIG
 
     #Load ground truth factors and latent codes
     metrics = pd.read_csv(metrics_path)
     factors = metrics[factors_cols].to_numpy()
     digits_subset = digits[-len(factors):]
-    z_mean, _, _ = vae.encoder.predict(digits_subset, verbose=2)
 
-    #Discretize latent codes and factors
-    discretized_latent_codes = discretize_data(z_mean, n_bins=10)
-    discretized_factors = discretize_data(factors, n_bins=10)
+    for model, model_name in zip(models, model_names):
+        print(f"{model_name} MIG Calculation:")
+        z_mean, _, _ = model.encoder.predict(digits_subset, verbose=2)
 
-    #Calculate MI and MIG
-    mi_matrix = calculate_mi(discretized_latent_codes, discretized_factors)
-    mig_score, individual_mig_scores = compute_mig(mi_matrix, discretized_factors)
+        #Discretize latent codes and factors for MI calculation
+        discretized_latent_codes = discretize_data(z_mean, n_bins=10)
+        discretized_factors = discretize_data(factors, n_bins=10)
 
-    #Print and plot results
-    print("MIG Score:", mig_score)
-    print("Individual MIG Scores:", individual_mig_scores)
+        mi_matrix = calculate_mi(discretized_latent_codes, discretized_factors)
+        mig_score, individual_mig_scores = compute_mig(mi_matrix, discretized_factors)
 
-    #Heatmap of mutual information
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(mi_matrix, annot=True, fmt=".2f", cmap="viridis", xticklabels=factors_cols, yticklabels=[f"z{i}" for i in range(z_mean.shape[1])])
-    plt.title("Mutual Information Between Latent Variables and Factors")
-    plt.xlabel("Factors")
-    plt.ylabel("Latent Variables")
-    #Save to figures folder
-    plt.savefig(f"figures/MI_heatmap_{model_name}.png")
+        print(f"MIG Score: {mig_score}")
+        print(f"Individual MIG Scores: {individual_mig_scores}")
 
-    return mig_score, mi_matrix
+        #Heatmap of mutual information
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            mi_matrix,
+            annot=True,
+            fmt=".2f",
+            cmap="viridis",
+            xticklabels=factors_cols,
+            yticklabels=[f"z{i}" for i in range(z_mean.shape[1])],
+        )
+        plt.title(f"Mutual Information Between Latent Variables and Factors - {model_name}")
+        plt.xlabel("Factors")
+        plt.ylabel("Latent Variables")
+        plt.savefig(f"figures/MI_heatmap_{model_name}.png")
 
 #Reconstruction accuracy (General performance)
-def reconstruction_accuracy(model, data):
-    reconstructed = model.predict(data, verbose=2)
-    mse = np.mean(np.square(data - reconstructed))
-    return 1 - mse
+def reconstruction_accuracy(models, model_names, data):
+    for model, model_name in zip(models, model_names):
+        reconstructed = model.predict(data, verbose=2)
+        mse = np.mean(np.square(data - reconstructed))
+        accuracy = 1 - mse
+        print(f"{model_name} Reconstruction Accuracy: {accuracy}")
+
+
+def visualize_reconstruction(models, model_names, test_sample, save_path="figures/reconstructions.png"):
+    reconstructed_images = [model.predict(test_sample, verbose=0) for model in models]
+
+    plt.figure(figsize=(15, 4))
+
+    #Plot original input
+    plt.subplot(1, len(models) + 1, 1)
+    plt.imshow(test_sample[0, :, :, 0], cmap="gray")
+    plt.title("Original")
+    plt.axis("off")
+
+    #Plot reconstructions
+    for i, (reconstruction, model_name) in enumerate(zip(reconstructed_images, model_names)):
+        plt.subplot(1, len(models) + 1, i + 2)
+        plt.imshow(reconstruction[0, :, :, 0], cmap="gray")
+        plt.title(model_name)
+        plt.axis("off")
+
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.show()

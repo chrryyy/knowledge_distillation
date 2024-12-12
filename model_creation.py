@@ -16,7 +16,7 @@ replace_tc_model = False
 
 #Two student models
 replace_student_model = False
-replace_student_tc_model = False
+replace_student_tc_model = True
 
 #Encoder creation function
 def create_baseline_encoder(model_name, latent_dim = 5, input_shape=(28, 28, 1)):
@@ -103,19 +103,19 @@ with open(output_file, "w") as f:
             if os.path.exists('models/tcvae_teacher.keras'):
                 os.remove('models/tcvae_teacher.keras')
             #Teacher VAE: More filters, more complex architecture
-            encoder_big = create_teacher_encoder()
-            decoder_big = create_decoder(num_filters=32)
-            vae_big = TC_VAE(encoder_big, decoder_big, beta=1.0, beta_tc=0.0)
-            vae_big.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
+            encoder_tc = create_teacher_encoder()
+            decoder_tc = create_decoder(num_filters=32)
+            vae_tc = TC_VAE(encoder_tc, decoder_tc, beta=2.0, beta_tc=0.0)
+            vae_tc.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
 
             #Add BetaScheduler
             beta_tc_var = tf.Variable(0.0, trainable=False, dtype=tf.float32)
-            callbacks = [BetaScheduler(beta_tc_var, max_beta=10.0, schedule_epochs=10)]
+            callbacks = [BetaScheduler(beta_tc_var, max_beta=0.5, schedule_epochs=10)]
 
             #Train
             print("Training Teacher VAE")
-            vae_big.fit(digits, epochs=20, batch_size=128, callbacks=callbacks, verbose=2)
-            vae_big.save('models/tcvae_teacher.keras')
+            vae_tc.fit(digits, epochs=20, batch_size=128, callbacks=callbacks, verbose=2)
+            vae_tc.save('models/tcvae_teacher.keras')
 
 
         if replace_student_model:
@@ -141,7 +141,7 @@ with open(output_file, "w") as f:
             
             encoder_student_tc = create_baseline_encoder("student_tc_vae")
             decoder_student_tc = create_decoder(num_filters=32)
-            vae_student_tc = DistillationVAE(encoder=encoder_student, decoder=decoder_student, teacher_model=teacher_vae, alpha=0.5)
+            vae_student_tc = DistillationVAE(encoder=encoder_student_tc, decoder=decoder_student_tc, teacher_model=teacher_vae, alpha=0.5)
             vae_student_tc.compile(optimizer=keras.optimizers.Adam(learning_rate = 0.0001))
             print("Training Student TC VAE")
             vae_student_tc.fit(digits, epochs=10, batch_size=128, verbose=2)
