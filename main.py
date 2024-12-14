@@ -11,24 +11,24 @@ from evaluation import (
 #File paths
 baseline_model_path = 'models/vae_baseline.keras'
 student_model_path = 'models/vae_student.keras'
-student_tc_model_path = 'models/vae_student_tc.keras'
-big_model_path = 'models/vae_big.keras'
-tc_model_path = 'models/tcvae_teacher.keras'
+student_tc_model_path = 'models/tcvae_student.keras'
+teacher_model_path = 'models/vae_teacher.keras'
+teacher_tc_model_path = 'models/tcvae_teacher.keras'
 metrics_path = "dataset/t10k-morpho.csv"
 output_file = "output_logs/main.txt"
 
 #Load models and data
-vae_baseline, vae_student, vae_student_tc, vae_big, vae_tc = load_models(baseline_model_path, student_model_path, student_tc_model_path, big_model_path, tc_model_path)
+vae_baseline, vae_student, vae_student_tc, vae_teacher, vae_teacher_tc = load_models(baseline_model_path, student_model_path, student_tc_model_path, teacher_model_path, teacher_tc_model_path)
 digits = load_data()
 
 #Factors of variation
 factors_cols = ["length", "thickness", "slant", "width", "height"]
 
 # Models and their names
-models = [vae_baseline, vae_student, vae_big]
+models = [vae_baseline, vae_student, vae_teacher]
 model_names = ["Baseline VAE", "Student VAE", "Teacher VAE"]
 
-models_ablation = [vae_student, vae_big, vae_student_tc, vae_tc]
+models_ablation = [vae_student, vae_teacher, vae_student_tc, vae_teacher_tc]
 model_ablation_names = ["Student VAE", "Teacher VAE", "Student TC VAE", "TC VAE"]
 
 
