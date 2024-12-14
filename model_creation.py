@@ -150,33 +150,3 @@ with open(output_file, "w") as f:
     finally:
         # Restore original stdout
         sys.stdout = sys.__stdout__
-
-import struct
-import numpy as np
-import pandas as pd
-
-def load_labels(file_path):
-    with open(file_path, 'rb') as f:
-        # Read magic number and number of labels
-        magic, num_items = struct.unpack(">II", f.read(8))  # Big-endian, two unsigned integers
-        assert magic == 2049, f"Invalid magic number: {magic}"  # Ensure it's a label file
-        # Read the labels
-        labels = np.frombuffer(f.read(), dtype=np.uint8)
-    return labels
-
-# File paths
-labels_file_path = "dataset/t10k-labels.idx1-ubyte"
-morpho_csv_path = "dataset/t10k-morpho.csv"
-
-# Load labels and morphometric data
-labels = load_labels(labels_file_path)
-morpho_df = pd.read_csv(morpho_csv_path)
-
-# Combine into a single DataFrame
-morpho_df["label"] = labels
-
-# Save to Excel
-output_path = "combined_morphometrics.csv"
-morpho_df.to_csv(output_path, index=False)
-
-print(f"Combined data saved to {output_path}")
